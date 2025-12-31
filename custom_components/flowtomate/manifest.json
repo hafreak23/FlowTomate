@@ -1,10 +1,11 @@
 {
   "domain": "flowtomate",
   "name": "FlowTomate",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "documentation": "https://github.com/hafreak23/FlowTomate",
   "dependencies": [],
   "codeowners": ["@hafreak23"],
   "requirements": [],
+  "config_flow": true,
   "iot_class": "local_polling"
 }
