@@ -1,15 +1,30 @@
 """FlowTomate - Visual Flow Editor for Home Assistant Automations."""
 import logging
 import os
+
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.components import frontend
 
+from .const import DOMAIN
+
 _LOGGER = logging.getLogger(__name__)
 
-DOMAIN = "flowtomate"
 
-async def async_setup(hass: HomeAssistant, config: dict):
-    """Set up the FlowTomate component."""
+async def async_setup(hass: HomeAssistant, config: dict) -> bool:
+    """Set up the FlowTomate component from YAML (for backwards compatibility)."""
+    # If there's YAML config, trigger import flow
+    if DOMAIN in config:
+        hass.async_create_task(
+            hass.config_entries.flow.async_init(
+                DOMAIN, context={"source": "import"}, data={}
+            )
+        )
+    return True
+
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Set up FlowTomate from a config entry (UI installation)."""
     
     # Get the path to this integration's directory
     integration_dir = os.path.dirname(__file__)
@@ -18,7 +33,7 @@ async def async_setup(hass: HomeAssistant, config: dict):
     await hass.components.frontend.async_register_built_in_panel(
         component_name="custom",
         sidebar_title="FlowTomate",
-        sidebar_icon="mdi:graph",
+        sidebar_icon="mdi:graphql",
         frontend_url_path="flowtomate",
         config={
             "_panel_custom": {
@@ -29,7 +44,7 @@ async def async_setup(hass: HomeAssistant, config: dict):
         require_admin=True,
     )
     
-    # Register static path - serve from custom_components/flowtomate/www/
+    # Register static path
     www_dir = os.path.join(integration_dir, "www")
     hass.http.register_static_path(
         "/flowtomate_static",
@@ -37,6 +52,18 @@ async def async_setup(hass: HomeAssistant, config: dict):
         cache_headers=False
     )
     
-    _LOGGER.info("FlowTomate integration loaded successfully from %s", www_dir)
+    _LOGGER.info("FlowTomate integration loaded successfully")
     
     return True
+
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload a config entry."""
+    # Note: Panel unregistration is not fully supported, but we can clean up
+    _LOGGER.info("FlowTomate integration unloaded")
+    return True
+
+
+async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Handle removal of an entry."""
+    _LOGGER.info("FlowTomate integration removed")
