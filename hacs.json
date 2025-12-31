@@ -1,0 +1,8 @@
+{
+  "name": "FlowTomate",
+  "content_in_root": false,
+  "filename": "flowtomate",
+  "render_readme": true,
+  "domains": ["flowtomate"],
+  "homeassistant": "2025.12.0"
+}
