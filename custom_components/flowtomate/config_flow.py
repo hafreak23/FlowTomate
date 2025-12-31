@@ -44,22 +44,3 @@ class FlowTomateConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_import(self, import_config):
         """Handle import from configuration.yaml."""
         return await self.async_step_user(None)
-EOF
-
-# Create translations/en.json
-echo "Creating translations/en.json..."
-cat > translations/en.json << 'EOF'
-{
-  "config": {
-    "step": {
-      "user": {
-        "title": "Set up FlowTomate",
-        "description": "FlowTomate provides a visual flow editor for your Home Assistant automations.\n\nClick Submit to add FlowTomate to your Home Assistant.",
-        "data": {}
-      }
-    },
-    "abort": {
-      "single_instance_allowed": "FlowTomate is already configured. Only one instance is allowed."
-    }
-  }
-}
